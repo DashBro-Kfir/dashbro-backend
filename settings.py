@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     app_name: str = "dashbro"
 
     # DB
-    db_url = "postgresql://db_user:pass123@localhost:5432/db_name"
+    db_url: str = "postgresql://db_user:pass123@localhost:5432/db_name"
 
 
 settings = Settings()

@@ -1,19 +1,22 @@
 import logging
 import os
+from pathlib import Path
+
+from settings import Settings
 
 # Ensure logs directory exists
-os.makedirs("logs", exist_ok=True)
+Path("logs").mkdir(parents=True, exist_ok=True)
 
 # Configure logger
-logger = logging.getLogger("dashboard_logger")
+logger = logging.getLogger(Settings.app_name)
 logger.setLevel(logging.INFO)
 
 # File handler
-file_handler = logging.FileHandler("logs/app.log")
+file_handler = logging.FileHandler(Settings.logs_directory)
 file_handler.setLevel(logging.INFO)
 
 # Formatter
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 file_handler.setFormatter(formatter)
 
 # Prevent duplicate handlers

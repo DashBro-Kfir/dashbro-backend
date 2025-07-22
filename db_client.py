@@ -1,5 +1,6 @@
-from sqlmodel import SQLModel, Session, create_engine
 from sqlalchemy.exc import SQLAlchemyError
+from sqlmodel import Session, SQLModel, create_engine
+
 from logger import logger
 
 

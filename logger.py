@@ -2,17 +2,17 @@ import logging
 import os
 from pathlib import Path
 
-from settings import Settings
+from settings import settings
 
 # Ensure logs directory exists
 Path("logs").mkdir(parents=True, exist_ok=True)
 
 # Configure logger
-logger = logging.getLogger(Settings.app_name)
+logger = logging.getLogger(settings.app_name)
 logger.setLevel(logging.INFO)
 
 # File handler
-file_handler = logging.FileHandler(Settings.logs_directory)
+file_handler = logging.FileHandler(settings.logs_directory)
 file_handler.setLevel(logging.INFO)
 
 # Formatter

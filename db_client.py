@@ -1,49 +1,29 @@
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import os
-from dotenv import load_dotenv
-from logger import logger  
+from sqlmodel import SQLModel, Session, create_engine
+from sqlalchemy.exc import SQLAlchemyError
+from logger import logger
 
-load_dotenv()
 
 class DBClient:
-    def __init__(self):
+    def __init__(self, database_url):
         try:
-            self.conn = psycopg2.connect(
-                host=os.getenv("DB_HOST"),
-                port=os.getenv("DB_PORT"),
-                dbname=os.getenv("DB_NAME"),
-                user=os.getenv("DB_USER"),
-                password=os.getenv("DB_PASSWORD")
-            )
-            logger.info("Database connection established.")
+            self.database_url = database_url
+            self.engine = create_engine(self.database_url, echo=False)
+            logger.info("SQLModel engine created.")
         except Exception as e:
-            logger.error(f"Failed to connect to the database: {e}")
+            logger.error(f"Failed to create SQLModel engine: {e}")
             raise
 
-    def execute(self, query, params=None, fetch=False, fetchone=False):
+    def create_tables(self):
         try:
-            with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
-                logger.debug(f"Executing query: {query} | Params: {params}")
-                cur.execute(query, params)
-                if fetchone:
-                    result = cur.fetchone()
-                    logger.debug(f"Query result (one): {result}")
-                    return result
-                if fetch:
-                    result = cur.fetchall()
-                    logger.debug(f"Query result (all): {result}")
-                    return result
-                self.conn.commit()
-                logger.debug("Query executed and committed successfully.")
+            SQLModel.metadata.create_all(self.engine)
+            logger.info("All tables created successfully.")
         except Exception as e:
-            logger.error(f"Error executing query: {e} | Query: {query} | Params: {params}")
-            self.conn.rollback()
+            logger.error(f"Failed to create tables: {e}")
             raise
 
-    def close(self):
+    def get_session(self):
         try:
-            self.conn.close()
-            logger.info("Database connection closed.")
-        except Exception as e:
-            logger.error(f"Error closing database connection: {e}")
+            return Session(self.engine)
+        except SQLAlchemyError as e:
+            logger.error(f"Failed to create DB session: {e}")
+            raise

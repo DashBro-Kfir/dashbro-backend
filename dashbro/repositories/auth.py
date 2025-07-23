@@ -2,11 +2,9 @@ import bcrypt
 from fastapi import HTTPException
 from sqlmodel import Session, select
 
-from dashbro.schemas.login_request import SignupRequest
-from dashbro.schemas.login_request import LoginRequest
-
 from dashbro.clients.db_client import DBClient
 from dashbro.models.user import User
+from dashbro.schemas.login_request import LoginRequest, SignupRequest
 from logger import logger
 
 
@@ -28,7 +26,11 @@ class AuthService:
         hashed_pw = bcrypt.hashpw(login_request.password.encode(), bcrypt.gensalt()).decode()
 
         new_user = User(
-            username=login_request.username, firstname=login_request.firstname, surname=login_request.surname, password=hashed_pw, email=login_request.email
+            username=login_request.username,
+            firstname=login_request.firstname,
+            surname=login_request.surname,
+            password=hashed_pw,
+            email=login_request.email,
         )
         self.session.add(new_user)
         self.session.commit()

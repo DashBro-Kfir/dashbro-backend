@@ -6,5 +6,8 @@ class Settings(BaseSettings):
     logs_directory: str = "logs/app.log"
     app_name: str = "dashbro"
 
+    # DB
+    db_url: str = "postgresql://db_user:pass123@localhost:5432/db_name"
+
 
 settings = Settings()
